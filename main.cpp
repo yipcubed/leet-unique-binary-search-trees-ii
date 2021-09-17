@@ -17,7 +17,7 @@
 #include "../utils/VectorUtils.hpp"
 // #include "../utils/HeapUtils.hpp"
 // #include "../utils/BinarySearch.hpp"
-// #include "../utils/TreeUtils.hpp"
+#include "../utils/TreeUtils.hpp"
 
 using namespace std;
 
@@ -41,14 +41,36 @@ static auto __ __attribute__((unused)) = []() { // NOLINT
 
 class Solution {
 public:
-  bool func(vector<int> &arr) { return true; }
+  vector<TreeNode *> genTrees(int start, int end) {
+    vector<TreeNode *> res;
+    if (start > end) {
+      return vector<TreeNode *>{nullptr};
+    }
+
+    if (start == end) {
+      return vector<TreeNode *>{new TreeNode(start)};
+    }
+
+    for (int i = start; i <= end; i++) {
+      vector<TreeNode *> left = genTrees(start, i - 1);
+      vector<TreeNode *> right = genTrees(i + 1, end);
+
+      for (auto l : left) {
+        for (auto r : right) {
+          res.push_back(new TreeNode(i, l, r));
+        }
+      }
+    }
+    return res;
+  }
+  vector<TreeNode *> generateTrees(int n) { return genTrees(1, n); }
 };
 
 void test1() {
   cout << boolalpha;
   vector<int> arr{1, 2, 3};
 
-  cout << "1 ? " << Solution().func(arr) << endl;
+  cout << "1 ? " << Solution().generateTrees(3) << endl;
 }
 
 void test2() {}
